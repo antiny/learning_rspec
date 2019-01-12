@@ -17,3 +17,7 @@ gem "rack-test", "~> 1.1"
 gem "guard", "~> 2.15"
 
 gem "guard-rspec", "~> 4.7"
+
+gem "sequel", "~> 5.16"
+
+gem "sqlite3", "~> 1.3"
