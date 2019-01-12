@@ -37,10 +37,50 @@ module ExpenseTracker
           expect(result).not_to be_success
           expect(result.expense_id).to be_nil 
           expect(result.error_message).to include('`payee` is required')
+        end
 
-          expect(DB[:expenses].count).to eq(0)
+        it 'does not create new record' do 
+          expense.delete(:payee)
+          
+          expect { ledger.record(expense) }.not_to change { DB[:expenses].count }
         end
       end
+
+      context 'when the expense lacks a date' do 
+        it 'rejects the expense as invalid' do 
+          expense.delete(:date)
+
+          result = ledger.record(expense)
+
+          expect(result).not_to be_success
+          expect(result.expense_id).to be_nil
+          expect(result.error_message).to include('`date` is required')
+        end
+
+        it 'does not create new record' do 
+          expense.delete(:date)
+          
+          expect { ledger.record(expense) }.not_to change { DB[:expenses].count }
+        end
+      end
+
+      context 'when the expense lacks an amount' do 
+        it 'rejects the expense as invalid' do 
+          expense.delete(:amount)
+
+          result = ledger.record(expense)
+
+          expect(result).not_to be_success
+          expect(result.expense_id).to be_nil
+          expect(result.error_message).to include('`amount` is required')
+        end
+
+        it 'does not create new record' do 
+          expense.delete(:amount)
+          
+          expect { ledger.record(expense) }.not_to change { DB[:expenses].count }
+        end
+      end 
     end
 
     describe '#expenses_on' do 

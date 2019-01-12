@@ -10,6 +10,16 @@ module ExpenseTracker
         return ResultRecord.new(false, nil, message)
       end
 
+      unless expense.key?(:date)
+        message = 'Invalid expense: `date` is required'
+        return ResultRecord.new(false, nil, message)
+      end
+
+      unless expense.key?(:amount)
+        message = 'Invalid expense: `amount` is required'
+        return ResultRecord.new(false, nil, message)
+      end
+
       DB[:expenses].insert(expense)
       id = DB[:expenses].max(:id)
       ResultRecord.new(true, id, nil)
