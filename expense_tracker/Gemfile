@@ -27,3 +27,5 @@ gem 'ox', '~> 2.10'
 gem 'byebug', '~> 10.0'
 
 gem 'pry-byebug', '~> 3.6'
+
+gem "addressable", "~> 2.5"
