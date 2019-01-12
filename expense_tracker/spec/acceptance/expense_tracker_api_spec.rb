@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'rack/test'
 require 'json'
 require 'pp'
 require_relative '../../app/api'
 
 module ExpenseTracker
-  RSpec.describe "Expense Tracker API", :db do 
+  RSpec.describe 'Expense Tracker API', :db do
     include Rack::Test::Methods
 
     def app
@@ -21,7 +23,7 @@ module ExpenseTracker
       expense.merge(id: parsed['expense_id'])
     end
 
-    it 'records submitted expense' do       
+    it 'records submitted expense' do
       coffee = {
         'payee' => 'Starbucks',
         'amount' => 5.75,
@@ -50,7 +52,7 @@ module ExpenseTracker
       expenses = JSON.parse(last_response.body)
       expect(expenses).to contain_exactly(
         a_hash_including(coffee),
-        a_hash_including(zoo),
+        a_hash_including(zoo)
       )
     end
   end

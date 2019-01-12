@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'json'
 require 'pp'
@@ -7,7 +9,7 @@ require_relative 'ledger'
 
 module ExpenseTracker
   class API < ::Sinatra::Base
-    TYPE_TYPE_XML  = 'application/TYPE_XML'
+    TYPE_XML  = 'application/TYPE_XML'
     TYPE_JSON = 'application/json'
 
     def initialize(ledger: ExpenseTracker::Ledger.new)
@@ -15,7 +17,7 @@ module ExpenseTracker
       super()
     end
 
-    get '/' do 
+    get '/' do
       'Hello World'
     end
 
@@ -23,18 +25,18 @@ module ExpenseTracker
       expense = deserialize(request.body.read)
       result = @ledger.record(expense)
       if result.success?
-        serialize({'expense_id' => result.expense_id}, mime)
+        serialize({ 'expense_id' => result.expense_id }, mime)
       else
         status 422
         JSON.generate('error' => result.error_message)
       end
     end
 
-    get '/expenses/:date' do 
+    get '/expenses/:date' do
       serialize(@ledger.expenses_on(params['date']), mime)
     end
 
-    private 
+    private
 
     def mime
       if request.accept?(TYPE_JSON)
@@ -42,7 +44,7 @@ module ExpenseTracker
       elsif request.accept?(TYPE_XML)
         TYPE_XML
       else
-        raise "Unsupported MIME type"
+        raise 'Unsupported MIME type'
       end
     end
 
