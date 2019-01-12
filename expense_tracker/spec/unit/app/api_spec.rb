@@ -7,6 +7,9 @@ module ExpenseTracker
   RSpec.describe API do 
     include Rack::Test::Methods
 
+    TYPE_XML  = 'application/TYPE_XML'
+    TYPE_JSON = 'application/json'
+
     def app
       API.new(ledger: ledger)
     end
@@ -15,7 +18,7 @@ module ExpenseTracker
       JSON.parse(last_response.body)
     end
 
-    def parsed_response_from_xml
+    def parsed_response_from_TYPE_XML
       Ox.parse_obj(last_response.body)
     end
 
@@ -42,23 +45,23 @@ module ExpenseTracker
           expect(last_response.status).to eq(200)
         end
 
-        context 'when request with xml format' do 
+        context 'when request with TYPE_XML format' do 
           it 'returns the expense_id' do
-            header 'Accept', 'application/xml'
+            header 'Accept', TYPE_XML
             post '/expenses', Ox.dump(expense)
 
-            expect(parsed_response_from_xml).to include('expense_id')
+            expect(parsed_response_from_TYPE_XML).to include('expense_id')
           end
 
-          it 'responds with application/xml content-type' do 
-            header 'Accept', 'application/xml'
+          it 'responds with application/TYPE_XML content-type' do 
+            header 'Accept', TYPE_XML
             post '/expenses', Ox.dump(expense)
 
-            expect(last_response.header['Content-Type']).to eq('application/xml')
+            expect(last_response.header['Content-Type']).to eq(TYPE_XML)
           end
 
           it 'responds with a 200 (OK)' do 
-            header 'Accept', 'application/xml'
+            header 'Accept', TYPE_XML
             post '/expenses', Ox.dump(expense)
 
             expect(last_response.status).to eq(200)
@@ -114,21 +117,21 @@ module ExpenseTracker
           expect(last_response.status).to eq(200)
         end
 
-        context 'when request for xml format' do 
-          it 'returns the expense records as XML' do 
-            header 'Accept', 'application/xml'
+        context 'when request for TYPE_XML format' do 
+          it 'returns the expense records as TYPE_XML' do 
+            header 'Accept', TYPE_XML
             get '/expenses/2017-10-10'
     
-            expect(parsed_response_from_xml).to be_kind_of(Array)
-            expect(parsed_response_from_xml[0]).to include('expense1')
-            expect(parsed_response_from_xml[1]).to include('expense 2')
+            expect(parsed_response_from_TYPE_XML).to be_kind_of(Array)
+            expect(parsed_response_from_TYPE_XML[0]).to include('expense1')
+            expect(parsed_response_from_TYPE_XML[1]).to include('expense 2')
           end
 
-          it 'responds with application/xml content-type' do 
-            header 'Accept', 'application/xml'
+          it 'responds with application/TYPE_XML content-type' do 
+            header 'Accept', TYPE_XML
             get '/expenses/2017-10-10'
 
-            expect(last_response.header['Content-Type']).to eq('application/xml')
+            expect(last_response.header['Content-Type']).to eq(TYPE_XML)
           end
         end  
       end
@@ -153,13 +156,13 @@ module ExpenseTracker
           expect(last_response.status).to eq(200)
         end
 
-        context 'when request for xml format' do 
-          it 'returns an empty array as XML' do 
-            header 'Accept', 'application/xml'
+        context 'when request for TYPE_XML format' do 
+          it 'returns an empty array as TYPE_XML' do 
+            header 'Accept', TYPE_XML
             get '/expenses/2017-10-10'
 
-            expect(parsed_response_from_xml).to be_kind_of(Array)
-            expect(parsed_response_from_xml).to be_empty
+            expect(parsed_response_from_TYPE_XML).to be_kind_of(Array)
+            expect(parsed_response_from_TYPE_XML).to be_empty
           end
         end
       end

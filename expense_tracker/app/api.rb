@@ -7,6 +7,9 @@ require_relative 'ledger'
 
 module ExpenseTracker
   class API < ::Sinatra::Base
+    TYPE_TYPE_XML  = 'application/TYPE_XML'
+    TYPE_JSON = 'application/json'
+
     def initialize(ledger: ExpenseTracker::Ledger.new)
       @ledger = ledger
       super()
@@ -34,10 +37,10 @@ module ExpenseTracker
     private 
 
     def mime
-      if request.accept?('application/json')
-        'application/json'
-      elsif request.accept?('application/xml')
-        'application/xml'
+      if request.accept?(TYPE_JSON)
+        TYPE_JSON
+      elsif request.accept?(TYPE_XML)
+        TYPE_XML
       else
         raise "Unsupported MIME type"
       end
@@ -45,10 +48,10 @@ module ExpenseTracker
 
     def serialize(data, mime)
       case mime
-      when 'application/xml'
+      when TYPE_XML
         headers['Content-Type'] = mime
         Ox.dump(data)
-      when 'application/json'
+      when TYPE_JSON
         headers['Content-Type'] = mime
         JSON.generate(data)
       else
@@ -58,9 +61,9 @@ module ExpenseTracker
 
     def deserialize(body)
       case mime
-      when 'application/xml'
+      when TYPE_XML
         Ox.parse_obj(body)
-      when 'application/json'
+      when TYPE_JSON
         JSON.parse(body, symbolize_names: true)
       else
         raise "Unsupported Mime Type of #{mime}"
