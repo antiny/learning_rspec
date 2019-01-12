@@ -16,6 +16,14 @@ ENV['RACK_ENV'] = 'test'
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.alias_example_group_to :pdescribe, pry: true
+  config.alias_example_to :pit, pry: true
+
+  config.after(:example, pry: true) do |ex|
+    require 'pry'
+    binding.pry
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
